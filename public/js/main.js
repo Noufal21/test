@@ -12,6 +12,7 @@ $.ajaxSetup({
 });
 $("#searchByProperty").click(function(e){
     e.preventDefault();
+    ipage =1;
     const address = $("#search").val();
     codeAddress(address);
 });
@@ -48,7 +49,7 @@ function getlist(lat,lng)
      $.ajax({
          type:'get',
          url:'/getTotalPages',
-         data:{lat:lat,lng:lng},
+         data:{lat:lat,lng:lng,zip:postalcode},
          success:function(data){
              totalPages = data;
              console.log(data);
@@ -83,19 +84,27 @@ function getlist(lat,lng)
 }
      var ipage =1;
      function getpageData(lat,lng,totalpage) {
+         console.log(postalcode);
          sleep(2000);
          $.ajax({
              type: 'post',
              async:false,
              url: '/allpropertiesList',
-             data: {lat: lat, lng: lng, page: ipage},
+             data: {lat: lat, lng: lng, page: ipage,zip:postalcode},
              success: function (data) {
                  if(data) {
                      for (const property of data.property) {
-                         const pattern =  /([L])([0-9]*)([-])([0-9]*)/g;
+                         const pattern = /l.([0-9]*)-([0-9]*)/gi;
+                         const patt1 = /lot.([0-9]*)&([0-9]*)/gi;
                          if(property['summary']['legal1']) {
                              var result = property['summary']['legal1'].match(pattern);
+                             var result2 = property['summary']['legal1'].match(patt1);
                              if (result) {
+                                 var text = '<div class="list-group-item list-group-item-action card"><div class="card-body"><h5 class="card-title">' + property['address']['oneLine'] + '</h5><h6 class="card-subtitle mb-2 text-muted">' + property['summary']['legal1'] + '</h6></div></div>';
+                                 $("#listpro").append(text);
+                             }
+                             else if (result2)
+                             {
                                  var text = '<div class="list-group-item list-group-item-action card"><div class="card-body"><h5 class="card-title">' + property['address']['oneLine'] + '</h5><h6 class="card-subtitle mb-2 text-muted">' + property['summary']['legal1'] + '</h6></div></div>';
                                  $("#listpro").append(text);
                              }
@@ -143,7 +152,7 @@ function getlist(lat,lng)
 
 
 // Auto complete text field for google map
-var lat,lng;
+var lat,lng,postalcode;
 var placeSearch, autocomplete;
 var componentForm = {
     postal_code: 'short_name'
@@ -190,12 +199,21 @@ function codeAddress(address) {
     }, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             //alert(results[0].geometry.location);
+            for(let a of results[0].address_components)
+            {
+                if(a.types[0] == 'postal_code')
+                {
+                    postalcode = parseInt(a.long_name)
+                    console.log(parseInt(postalcode));
+                }
+
+            }
             lat = results[0].geometry.location.lat();
             lng = results[0].geometry.location.lng()
             $.ajax({
                 type:'POST',
                 url:'/getzipdata',
-                data:{address:address,location : [results[0].geometry.location.lat(),results[0].geometry.location.lng()]},
+                data:{address:address,location : [results[0].geometry.location.lat(),results[0].geometry.location.lng()],zip:postalcode},
                 success:function(data){
                     //console.log(data);
                     polys = [data];

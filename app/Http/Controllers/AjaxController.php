@@ -13,6 +13,7 @@ class AjaxController extends Controller
     {
         $address = $request->input('address');
         $location = $request->input('location');
+        $zip= $request->input('zip');
         $AreaHierarchy = $this->getAreaHierarchy($location[0],$location[1]);
         $geoARRAY = array();
         $geoValName = array();
@@ -33,8 +34,11 @@ class AjaxController extends Controller
         $lat = $request->input('lat');
         $lng = $request->input('lng');
         $page = $request->input('page');
+        $zip = $request->input('zip');
+        $zip = urlencode($zip);
         $pagesize = 1000;
-        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?latitude=' . $lat . '&longitude=' . $lng . '&page=' . $page . '&pagesize=' . $pagesize;
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?latitude=' . $lat . '&longitude=' . $lng . '&page=' . $page . '&pagesize=' . $pagesize ;
+        //$url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?postalcode=' . $zip . '&page=' . $page . '&pagesize=' . $pagesize;
         $result = $this->curlPOIAPI($url);
         return response($result);
     }
