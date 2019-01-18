@@ -13,6 +13,7 @@ $.ajaxSetup({
 $("#searchByProperty").click(function(e){
     e.preventDefault();
     ipage =1;
+    $('#listpro').empty();
     const address = $("#search").val();
     codeAddress(address);
 });
