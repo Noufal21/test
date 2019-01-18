@@ -19,7 +19,7 @@ $("#searchByProperty").click(function(e){
 
 $('#searchByAddress').click(function (e) {
     e.preventDefault();
-    const address = $("#search").val();
+    const address = $("#searchAddress").val();
     $.ajax({
         type:'post',
         url:'/getPropertyResponse',
@@ -154,6 +154,9 @@ function initAutocomplete() {
     // location types.
     autocomplete = new google.maps.places.Autocomplete(
         /** @type {!HTMLInputElement} */(document.getElementById('search')),
+        {types: ['geocode']});
+    autocomplete = new google.maps.places.Autocomplete(
+        /** @type {!HTMLInputElement} */(document.getElementById('searchAddress')),
         {types: ['geocode']});
 
     //autocomplete.addListener('place_changed', fillInAddress);

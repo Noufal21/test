@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-md-7 col-xs-12 col-md-offset-3">
                 <div class="input-group mb-3 search search-reduce" id="searchByPropForm">
-                    <input class="form-control" id="searchAddress" name="address" type="text" placeholder="By Property"  onFocus="geolocateAddress()" required="true" value="" aria-describedby="searchByAddress"/>
+                    <input class="form-control searchfield" id="searchAddress" name="address" type="text" placeholder="By Property"  onFocus="geolocate()" required="true" value="" aria-describedby="searchByAddress"/>
                     <div class="input-group-append">
                         <input class="btn btn-primary" type="button" value="Search" id="searchByAddress">
                     </div>
