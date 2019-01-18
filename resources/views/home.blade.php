@@ -1,7 +1,7 @@
 @extends('master')
 @section('title','MyPage Title')
 @section('content')
-    <div class="container">
+    <div class="container pt-3">
         <div class="row">
             <div class="col-md-7 col-xs-12 col-md-offset-3">
                 <div class="input-group mb-3 search search-reduce" id="searchByPropForm">
