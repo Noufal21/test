@@ -40,9 +40,41 @@ class AjaxController extends Controller
         $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?latitude=' . $lat . '&longitude=' . $lng . '&page=' . $page . '&pagesize=' . $pagesize ;
         //$url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?postalcode=' . $zip . '&page=' . $page . '&pagesize=' . $pagesize;
         $result = $this->curlPOIAPI($url);
-        return response($result);
+        echo json_encode(($result));
     }
+    public function getHouseInventry(Request $request){
+        $lat = $request->input('lat');
+        $lng = $request->input('lng');
+        $AreaHierarchy = $this->getAreaHierarchy($lat,$lng);
+        $geoARRAY = array();
+        $geoValName = array();
+        foreach ($AreaHierarchy['response']['result']['package']['item'] as $key => $area) {
+            $geoARRAY[]  = $area['geo_key'];
+            $geoValName[$area['geo_key']] = $area['name'];
+        }
+        $communityData = $communityObj->getCommunityByAreaId1($geoARRAY[0]);
+        return response($communityData);
+    }
+    public function getCommunityByAreaId1($areaid)
+    {
+        $url = $this->obapiurl . "/communityapi/v2.0.0/area/full?AreaId=".$areaid;
 
+        $result_community1 = $this->curlPOIAPI($url);
+
+        $communityData = array();
+
+        if(count(@$result_community1['response']['result']['package']['item'])>0){
+            foreach($result_community1['response']['result']['package']['item'][0] as $resultCommKey=>$resultCommVal){
+                $communityData[strtoupper($resultCommKey)] = $resultCommVal;
+            }
+        }
+
+        //$communityData1[0] = $communityData;
+
+        //$communityDataFinal = json_decode (json_encode ($communityData1), FALSE);
+
+        return $communityData;
+    }
     public function getTotalPages(Request $request)
     {
         $lat = $request->input('lat');

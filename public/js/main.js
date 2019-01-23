@@ -13,7 +13,7 @@ $.ajaxSetup({
 $("#searchByProperty").click(function(e){
     e.preventDefault();
     ipage =1;
-    $('#listpro').empty();
+    $('.swiper-wrapper').empty();
     const address = $("#search").val();
     codeAddress(address);
 });
@@ -58,8 +58,10 @@ function getlist(lat,lng)
          },
          complete:function()
          {
-
-             getpageData(lat,lng,totalPages);
+             for (let i = 1; i <= totalPages; i++) {
+                 console.log(postData('/allpropertiesList', {lat: lat, lng: lng, page: i, zip: postalcode}));
+             }
+             //getpageData(lat,lng,totalPages);
 
                 /* for (let i = 1; i <= totalPages; i++) {
 
@@ -83,12 +85,82 @@ function getlist(lat,lng)
          timeout: 5000
      });
 }
+function buildUrl(url, parameters) {
+    let qs = "";
+    for (const key in parameters) {
+        if (parameters.hasOwnProperty(key)) {
+            const value = parameters[key];
+            qs +=
+                encodeURIComponent(key) + "=" + encodeURIComponent(value) + "&";
+        }
+    }
+    if (qs.length > 0) {
+        qs = qs.substring(0, qs.length - 1); //chop off last "&"
+        url = url + "?" + qs;
+    }
+
+    return url;
+}
+function postData(url = ``, data = {}) {
+    // Default options are marked with *
+     fetch(buildUrl(url,data), {
+        method: "get", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            // "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+    })
+         .then(function(response) {
+             if (response.status >= 200 && response.status < 300) {
+                 return response.json()
+             }
+             throw new Error(response.statusText)
+         })
+         .then(function(data) {
+             console.log(data);
+             if(data) {
+                 for (const property of data.property) {
+                     const pattern = /l.([0-9]*)-([0-9]*)/gi;
+                     const patt1 = /lot.([0-9]*)&([0-9]*)/gi;
+                     if(property['summary']['legal1']) {
+                         var result = property['summary']['legal1'].match(pattern);
+                         var result2 = property['summary']['legal1'].match(patt1);
+                         if (result) {
+                             var text = '<div class="swiper-slide">'+
+                                 '<div class="box selectPOI" id="5">'+
+                                 '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                 '<div class="restaurant-content">'+
+                                 '<label>Legal Description</label>'+
+                                 '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                             $(".swiper-wrapper").append(text);
+                         }
+                         else if (result2)
+                         {
+                             var text = '<div class="swiper-slide">'+
+                                 '<div class="box selectPOI" id="5">'+
+                                 '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                 '<div class="restaurant-content">'+
+                                 '<label>Legal Description</label>'+
+                                 '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                             $(".swiper-wrapper").append(text);
+                         }
+                     }
+                 }
+             }
+             f();
+         })
+}
      var ipage =1;
      function getpageData(lat,lng,totalpage) {
          console.log(postalcode);
-         sleep(2000);
          $.ajax({
-             type: 'post',
+             type: 'get',
              async:false,
              url: '/allpropertiesList',
              data: {lat: lat, lng: lng, page: ipage,zip:postalcode},
@@ -101,13 +173,23 @@ function getlist(lat,lng)
                              var result = property['summary']['legal1'].match(pattern);
                              var result2 = property['summary']['legal1'].match(patt1);
                              if (result) {
-                                 var text = '<div class="list-group-item list-group-item-action card"><div class="card-body"><h5 class="card-title">' + property['address']['oneLine'] + '</h5><h6 class="card-subtitle mb-2 text-muted">' + property['summary']['legal1'] + '</h6></div></div>';
-                                 $("#listpro").append(text);
+                                 var text = '<div class="swiper-slide">'+
+                                     '<div class="box selectPOI" id="5">'+
+                                     '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                     '<div class="restaurant-content">'+
+                                     '<label>Legal Description</label>'+
+                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                 $(".swiper-wrapper").append(text);
                              }
                              else if (result2)
                              {
-                                 var text = '<div class="list-group-item list-group-item-action card"><div class="card-body"><h5 class="card-title">' + property['address']['oneLine'] + '</h5><h6 class="card-subtitle mb-2 text-muted">' + property['summary']['legal1'] + '</h6></div></div>';
-                                 $("#listpro").append(text);
+                                 var text = '<div class="swiper-slide">'+
+                                     '<div class="box selectPOI" id="5">'+
+                                     '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                     '<div class="restaurant-content">'+
+                                     '<label>Legal Description</label>'+
+                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                 $(".swiper-wrapper").append(text);
                              }
                          }
                      }
@@ -130,7 +212,22 @@ function getlist(lat,lng)
 
 
 
-
+function f() {
+    var swiper = new Swiper('.swiper-container', {
+        slidesPerView: 5,
+        direction: 'vertical',
+        slideToClickedSlide: false,
+        on:{
+            click: function(){
+                //openInfoModal(this.clickedIndex+1);
+            },
+        },
+        navigation: {
+            nextEl: '.prev-slide',
+            prevEl: '.next-slide',
+        }
+    });
+}
 
 
 

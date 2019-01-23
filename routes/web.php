@@ -16,7 +16,7 @@ Route::get('/location','homeController@location');
 
 Route::get('/test','AjaxController@test');
 
-Route::post("allpropertiesList",'AjaxController@allpropertiesList');
+Route::get("allpropertiesList",'AjaxController@allpropertiesList');
 
 Route::get("getTotalPages",'AjaxController@getTotalPages');
 
