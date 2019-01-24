@@ -623,7 +623,16 @@ span.customerror,span.customerrorCity {
     border-right:none;
 }
 
+.brd {border-left: 1px solid #a8a8a8;}
+.gap20 {height: 20px;width:100%;float: left;}
+.list-row {margin-bottom: 9px;float: left;width: 100%;}
+.list-title, .list-price {font-size: 18px;font-weight: 700;color: #43575f;float: left;}
+.list-price {font-weight: normal;float: right;color: #43575f;}
 
+.ageDemo {
+    font-size: 24px;
+    margin-bottom:20px;
+}
 /*
 ==================================
   4. Responsive Media Query

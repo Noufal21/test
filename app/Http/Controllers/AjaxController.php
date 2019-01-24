@@ -52,7 +52,7 @@ class AjaxController extends Controller
             $geoARRAY[]  = $area['geo_key'];
             $geoValName[$area['geo_key']] = $area['name'];
         }
-        $communityData = $communityObj->getCommunityByAreaId1($geoARRAY[0]);
+        $communityData = $this->getCommunityByAreaId1($geoARRAY[0]);
         return response($communityData);
     }
     public function getCommunityByAreaId1($areaid)

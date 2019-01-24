@@ -1,6 +1,9 @@
 
 
-
+$("#houseDiv").hide();
+$("#eduDiv").hide();
+$("#incomeDiv").hide();
+$("#poiContent").hide();
 
 // Ajax Requests
 
@@ -32,58 +35,48 @@ $('#searchByAddress').click(function (e) {
         },
         timeout: 5000
     });
-})
-
-function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds){
-            break;
-        }
-    }
-}
-
+});
 
 function getlist(lat,lng)
- {
-     var totalPages;
-     $.ajax({
-         type:'get',
-         url:'/getTotalPages',
-         data:{lat:lat,lng:lng,zip:postalcode},
-         success:function(data){
-             totalPages = data;
-             console.log(data);
+{
+    var totalPages;
+    $.ajax({
+        type:'get',
+        url:'/getTotalPages',
+        data:{lat:lat,lng:lng,zip:postalcode},
+        success:function(data){
+            totalPages = data;
+            console.log(data);
 
-         },
-         complete:function()
-         {
-             for (let i = 1; i <= totalPages; i++) {
-                 console.log(postData('/allpropertiesList', {lat: lat, lng: lng, page: i, zip: postalcode}));
-             }
-             //getpageData(lat,lng,totalPages);
+        },
+        complete:function()
+        {
+            for (let i = 1; i <= totalPages; i++) {
+                console.log(postData('/allpropertiesList', {lat: lat, lng: lng, page: i, zip: postalcode}));
+            }
+            //getpageData(lat,lng,totalPages);
 
-                /* for (let i = 1; i <= totalPages; i++) {
+            /* for (let i = 1; i <= totalPages; i++) {
 
-                     $.ajax({
-                         type: 'get',
-                         url: '/allpropertiesList',
-                         async:false,
-                         data: {lat: lat, lng: lng, page: i},
-                         success: function (data) {
-                             for (const property of data.property) {
-                                 var text = '<div class="list-group-item list-group-item-action card"><div class="card-body"><h5 class="card-title">'+property['address']['oneLine']+'</h5><h6 class="card-subtitle mb-2 text-muted">'+property['summary']['legal1']+'</h6></div></div>';
-                                 $("#listpro").append(text);
-                             }
-                             //console.log(data);
+                 $.ajax({
+                     type: 'get',
+                     url: '/allpropertiesList',
+                     async:false,
+                     data: {lat: lat, lng: lng, page: i},
+                     success: function (data) {
+                         for (const property of data.property) {
+                             var text = '<div class="list-group-item list-group-item-action card"><div class="card-body"><h5 class="card-title">'+property['address']['oneLine']+'</h5><h6 class="card-subtitle mb-2 text-muted">'+property['summary']['legal1']+'</h6></div></div>';
+                             $("#listpro").append(text);
+                         }
+                         //console.log(data);
 
-                         },
-                         timeout: 5000
-                     });
-             }*/
-         },
-         timeout: 5000
-     });
+                     },
+                     timeout: 5000
+                 });
+         }*/
+        },
+        timeout: 5000
+    });
 }
 function buildUrl(url, parameters) {
     let qs = "";
@@ -103,7 +96,7 @@ function buildUrl(url, parameters) {
 }
 function postData(url = ``, data = {}) {
     // Default options are marked with *
-     fetch(buildUrl(url,data), {
+    fetch(buildUrl(url,data), {
         method: "get", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, cors, *same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -116,99 +109,101 @@ function postData(url = ``, data = {}) {
         redirect: "follow", // manual, *follow, error
         referrer: "no-referrer", // no-referrer, *client
     })
-         .then(function(response) {
-             if (response.status >= 200 && response.status < 300) {
-                 return response.json()
-             }
-             throw new Error(response.statusText)
-         })
-         .then(function(data) {
-             console.log(data);
-             if(data) {
-                 for (const property of data.property) {
-                     const pattern = /l.([0-9]*)-([0-9]*)/gi;
-                     const patt1 = /lot.([0-9]*)&([0-9]*)/gi;
-                     if(property['summary']['legal1']) {
-                         var result = property['summary']['legal1'].match(pattern);
-                         var result2 = property['summary']['legal1'].match(patt1);
-                         if (result) {
-                             var text = '<div class="swiper-slide">'+
-                                 '<div class="box selectPOI" id="5">'+
-                                 '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                 '<div class="restaurant-content">'+
-                                 '<label>Legal Description</label>'+
-                                 '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                             $(".swiper-wrapper").append(text);
-                         }
-                         else if (result2)
-                         {
-                             var text = '<div class="swiper-slide">'+
-                                 '<div class="box selectPOI" id="5">'+
-                                 '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                 '<div class="restaurant-content">'+
-                                 '<label>Legal Description</label>'+
-                                 '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                             $(".swiper-wrapper").append(text);
-                         }
-                     }
-                 }
-             }
-             f();
-         })
+        .then(function(response) {
+            if (response.status >= 200 && response.status < 300) {
+                return response.json()
+            }
+            throw new Error(response.statusText)
+        })
+        .then(function(data) {
+            console.log(data);
+            if(data) {
+
+                $("#poiContent").show();
+                for (const property of data.property) {
+                    const pattern = /l.([0-9]*)-([0-9]*)/gi;
+                    const patt1 = /lot.([0-9]*)&([0-9]*)/gi;
+                    if(property['summary']['legal1']) {
+                        var result = property['summary']['legal1'].match(pattern);
+                        var result2 = property['summary']['legal1'].match(patt1);
+                        if (result) {
+                            var text = '<div class="swiper-slide">'+
+                                '<div class="box selectPOI" id="5">'+
+                                '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                '<div class="restaurant-content">'+
+                                '<label>Legal Description</label>'+
+                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                            $(".swiper-wrapper").append(text);
+                        }
+                        else if (result2)
+                        {
+                            var text = '<div class="swiper-slide">'+
+                                '<div class="box selectPOI" id="5">'+
+                                '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                '<div class="restaurant-content">'+
+                                '<label>Legal Description</label>'+
+                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                            $(".swiper-wrapper").append(text);
+                        }
+                    }
+                }
+            }
+            f();
+        })
 }
-     var ipage =1;
-     function getpageData(lat,lng,totalpage) {
-         console.log(postalcode);
-         $.ajax({
-             type: 'get',
-             async:false,
-             url: '/allpropertiesList',
-             data: {lat: lat, lng: lng, page: ipage,zip:postalcode},
-             success: function (data) {
-                 if(data) {
-                     for (const property of data.property) {
-                         const pattern = /l.([0-9]*)-([0-9]*)/gi;
-                         const patt1 = /lot.([0-9]*)&([0-9]*)/gi;
-                         if(property['summary']['legal1']) {
-                             var result = property['summary']['legal1'].match(pattern);
-                             var result2 = property['summary']['legal1'].match(patt1);
-                             if (result) {
-                                 var text = '<div class="swiper-slide">'+
-                                     '<div class="box selectPOI" id="5">'+
-                                     '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                     '<div class="restaurant-content">'+
-                                     '<label>Legal Description</label>'+
-                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                                 $(".swiper-wrapper").append(text);
-                             }
-                             else if (result2)
-                             {
-                                 var text = '<div class="swiper-slide">'+
-                                     '<div class="box selectPOI" id="5">'+
-                                     '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                     '<div class="restaurant-content">'+
-                                     '<label>Legal Description</label>'+
-                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                                 $(".swiper-wrapper").append(text);
-                             }
-                         }
-                     }
-                 }
-                 //console.log(data);
+var ipage =1;
+function getpageData(lat,lng,totalpage) {
+    console.log(postalcode);
+    $.ajax({
+        type: 'get',
+        async:false,
+        url: '/allpropertiesList',
+        data: {lat: lat, lng: lng, page: ipage,zip:postalcode},
+        success: function (data) {
+            if(data) {
+                for (const property of data.property) {
+                    const pattern = /l.([0-9]*)-([0-9]*)/gi;
+                    const patt1 = /lot.([0-9]*)&([0-9]*)/gi;
+                    if(property['summary']['legal1']) {
+                        var result = property['summary']['legal1'].match(pattern);
+                        var result2 = property['summary']['legal1'].match(patt1);
+                        if (result) {
+                            var text = '<div class="swiper-slide">'+
+                                '<div class="box selectPOI" id="5">'+
+                                '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                '<div class="restaurant-content">'+
+                                '<label>Legal Description</label>'+
+                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                            $(".swiper-wrapper").append(text);
+                        }
+                        else if (result2)
+                        {
+                            var text = '<div class="swiper-slide">'+
+                                '<div class="box selectPOI" id="5">'+
+                                '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                '<div class="restaurant-content">'+
+                                '<label>Legal Description</label>'+
+                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                            $(".swiper-wrapper").append(text);
+                        }
+                    }
+                }
+            }
+            //console.log(data);
 
-             },
-             complete:function()
-             {
-                 ipage++;
-                 if(ipage <=totalpage)
-                 {
-                     getpageData(lat,lng,totalpage)
-                 }
-             },
-             timeout: 5000
-         });
+        },
+        complete:function()
+        {
+            ipage++;
+            if(ipage <=totalpage)
+            {
+                getpageData(lat,lng,totalpage)
+            }
+        },
+        timeout: 5000
+    });
 
-     }
+}
 
 
 
@@ -288,7 +283,7 @@ function geolocate() {
 }
 
 var geocoder;
-
+var communitydata;
 function codeAddress(address) {
 
     geocoder = new google.maps.Geocoder();
@@ -319,24 +314,239 @@ function codeAddress(address) {
                 },
                 complete:function(){
                     getlist(lat,lng)
+                    $.ajax({
+                        type:'get',
+                        url:'/getHouseInventry',
+                        data:{lat : lat,lng:lng},
+                        success:function(data){
+                            console.log(data);
+                            dountChart(data);
+                            $("#houseDiv").show();
+                            higherEdu(data);
+                            $("#eduDiv").show();
+                            incomeChart(data);
+                            $("#incomeDiv").show();
+
+                        },
+                        timeout: 5000
+                    });
                 },
                 timeout: 5000
             });
+
         } else {
             alert("Geocode was not successful for the following reason: " + status);
         }
     });
 }
 
+//Higher Education
+function higherEdu(communityData) {
+    $("#noHS").html(Math.round((100*(communityData['EDULTGR9']/communityData['EDUTOTALPOP'])).toFixed(2))+"%");
+    $("#someHS").html(Math.round((100*(communityData['EDUSHSCH']/communityData['EDUTOTALPOP'])).toFixed(2))+"%");
+    $("#hsGrad").html(Math.round((100*(communityData['EDUHSCH']/communityData['EDUTOTALPOP'])).toFixed(2))+"%");
+    $("#someCollege").html(Math.round((100*(communityData['EDUSCOLL']/communityData['EDUTOTALPOP'])).toFixed(2))+"%");
+    $("#associate").html(Math.round((100*(communityData['EDUASSOC']/communityData['EDUTOTALPOP'])).toFixed(2))+"%");
+    $("#bachlor").html(Math.round((100*(communityData['EDUBACH']/communityData['EDUTOTALPOP'])).toFixed(2))+"%");
+    $("#graduate").html(Math.round((100*(communityData['EDUGRAD']/communityData['EDUTOTALPOP'])).toFixed(2))+"%");
+
+}
 
 
+//donut Chart
+function dountChart($communityData) {
 
 
+    var mychart = AmCharts.makeChart( "chart-1", {
+        "type": "pie",
+        "theme": "light",
+        "dataProvider": [ {
+            "title": "Rented " + Math.round (100*($communityData['DWLRENT']/$communityData['DWLTOTAL'])).toFixed(2),
+            "value": Math.round (100*($communityData['DWLRENT']/$communityData['DWLTOTAL'])).toFixed(2),
+            "color":'#0051FF'
+        }, {
+            "title": "Owned "+Math.round (100*($communityData['DWLOWNED']/$communityData['DWLTOTAL'])).toFixed(2),
+            "value": Math.round (100*($communityData['DWLOWNED']/$communityData['DWLTOTAL'])).toFixed(2),
+            "color":'#43575f'
+        }, {
+            "title": "Vacant "+Math.round (100*($communityData['DWLVACNT']/$communityData['DWLTOTAL'])).toFixed(2),
+            "value": Math.round (100*($communityData['DWLVACNT']/$communityData['DWLTOTAL'])).toFixed(2),
+            "color":'#d6d6d6'
+        } ],
+        "titleField": "title",
+        "valueField": "value",
+        "colorField": "color",
+        "labelRadius": 0,
+
+        "radius": "42%",
+        "innerRadius": "60%",
+        "labelText": "[[title]]",
+        "export": {
+            "enabled": true
+        }
+    } );
+
+}
 
 
+// income chart
 
+function incomeChart($communityData) {
+    var chart = AmCharts.makeChart("chartincomediv", {
+        "type": "xy",
+        "theme": "light",
+        "marginRight": 80,
+        "dataDateFormat": "YYYY-MM-DD",
+        "startDuration": 1.5,
+        "trendLines": [],
+        "balloon": {
+            "adjustBorderColor": false,
+            "shadowAlpha": 0,
+            "fixedPosition": true
+        },
+        "graphs": [{
+            "balloonText": "<div style='margin:5px;'><b>[[y]]</b></div>",
+            "bullet": "diamond",
+            "maxBulletSize": 25,
+            "lineAlpha": 0.8,
+            "lineThickness": 2,
+            "lineColor": "#0051FF",
+            "fillAlphas": 0,
+            "xField": "date",
+            "yField": "ay",
+            "valueField": "aValue"
+        }],
+        "valueAxes": [{
+            "id": "ValueAxis-1",
+            "axisAlpha": 0,
+            "labelsEnabled": false,
+            "title": "Number of Households"
+        }, {
+            "id": "ValueAxis-2",
+            "axisAlpha": 0,
+            "position": "bottom",
+            "labelsEnabled": false,
+            "title": "Annual Income"
 
-
+        }],
+        "allLabels": [],
+        "titles": [],
+        "dataProvider": [{
+            "date": 1,
+            "ay": $communityData['HINCY00_10'],
+            "by": 2.2,
+            "aValue": 15,
+            "bValue": 10
+        }, {
+            "date": 2,
+            "ay":  $communityData['HINCY10_15'],
+            "by": 4.9,
+            "aValue": 8,
+            "bValue": 3
+        }, {
+            "date": 3,
+            "ay": $communityData['HINCY15_20'],
+            "by": 5.1,
+            "aValue": 16,
+            "bValue": 4
+        }, {
+            "date": 5,
+            "ay": $communityData['HINCY20_25'],
+            "aValue": 9
+        }, {
+            "date": 7,
+            "by":  $communityData['HINCY25_30'],
+            "bValue": 13
+        }, {
+            "date": 10,
+            "ay": $communityData['HINCY30_35'],
+            "by": 13.3,
+            "aValue": 9,
+            "bValue": 13
+        }, {
+            "date": 12,
+            "ay": $communityData['HINCY35_40'],
+            "by": 6.1,
+            "aValue": 5,
+            "bValue": 2
+        }, {
+            "date": 13,
+            "ay": $communityData['HINCY40_45'],
+            "aValue": 10
+        }, {
+            "date": 15,
+            "ay": $communityData['HINCY45_50'],
+            "by": 10.5,
+            "aValue": 3,
+            "bValue": 10
+        }, {
+            "date": 16,
+            "ay":  $communityData['HINCY50_60'],
+            "by": 12.3,
+            "aValue": 5,
+            "bValue": 13
+        }, {
+            "date": 20,
+            "ay":$communityData['HINCY60_75'],
+            "by": 4.5,
+            "bValue": 11
+        }, {
+            "date": 22,
+            "ay":  $communityData['HINCY75_100'],
+            "by": 15,
+            "aValue": 15,
+            "bValue": 10
+        }, {
+            "date": 23,
+            "ay": $communityData['HINCY100_125'],
+            "by": 10.8,
+            "aValue": 1,
+            "bValue": 11
+        }, {
+            "date": 24,
+            "ay": $communityData['HINCY125_150'],
+            "by": 19,
+            "aValue": 12,
+            "bValue": 3
+        }, {
+            "date": 23,
+            "ay":  $communityData['HINCY150_200'],
+            "by": 10.8,
+            "aValue": 1,
+            "bValue": 11
+        }, {
+            "date": 24,
+            "ay":  $communityData['HINCY200_250'],
+            "by": 19,
+            "aValue": 12,
+            "bValue": 3
+        }, {
+            "date": 23,
+            "ay":  $communityData['HINCY250_500'],
+            "by": 10.8,
+            "aValue": 1,
+            "bValue": 11
+        }, {
+            "date": 24,
+            "ay":   $communityData['HINCYGT_500'],
+            "by": 19,
+            "aValue": 12,
+            "bValue": 3
+        }],
+        "export": {
+            "enabled": false
+        },
+        "chartScrollbar": {
+            "offset": 15,
+            "scrollbarHeight": 5
+        },
+        "chartCursor": {
+            "pan": false,
+            "cursorAlpha": 0,
+            "valueLineAlpha": 0
+        }
+    });
+}
 
 
 

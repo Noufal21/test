@@ -14,13 +14,13 @@
 Route::get('/', 'homeController@home');
 Route::get('/location','homeController@location');
 
-Route::get('/test','AjaxController@test');
 
-Route::get("allpropertiesList",'AjaxController@allpropertiesList');
 
-Route::get("getTotalPages",'AjaxController@getTotalPages');
 
 // Ajax Responses
-
+Route::get('/test','AjaxController@test');
+Route::get("allpropertiesList",'AjaxController@allpropertiesList');
+Route::get("getTotalPages",'AjaxController@getTotalPages');
 Route::post('getzipdata', 'AjaxController@getzipResponse');
 Route::post('getPropertyResponse','AjaxController@getPropertyResponse');
+Route::get('/getHouseInventry','AjaxController@getHouseInventry');
