@@ -125,11 +125,17 @@ function postData(url = ``, data = {}) {
                     const patt2 = /lots.([0-9]*).([0-9]*).&.([0-9]*)/gi;
                     const patt3 = /lts.([0-9]*).([0-9]*).&.([0-9]*)/gi;
                     const patt1 = /lot.([0-9]*).&.([0-9]*)/gi;
+                    const patt6 = /lts.([0-9]*).([0-9]*).&.([0-9]*)/gi;
+                    const patt4 = /lts.([0-9]*).([0-9]*).([&]*).([0-9]*)/gi;
+                    const patt5 = /lts.([0-9]*).([0-9]*).(&[0-9]*)/gi;
                     if(property['summary']['legal1']) {
                         var result = property['summary']['legal1'].match(pattern);
                         var result2 = property['summary']['legal1'].match(patt1);
                         var result3 = property['summary']['legal1'].match(patt2);
                         var result4 = property['summary']['legal1'].match(patt3);
+                        var result5 = property['summary']['legal1'].match(patt4);
+                        var result6 = property['summary']['legal1'].match(patt5);
+                        var result7= property['summary']['legal1'].match(patt6);
                         if (result) {
                             var text = '<div class="swiper-slide">'+
                                 '<div class="box selectPOI" id="5">'+
@@ -158,6 +164,34 @@ function postData(url = ``, data = {}) {
                                 '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
                             $(".swiper-wrapper").append(text);
                         }else if (result4)
+                        {
+                            var text = '<div class="swiper-slide">'+
+                                '<div class="box selectPOI" id="5">'+
+                                '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                '<div class="restaurant-content">'+
+                                '<label>Legal Description</label>'+
+                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                            $(".swiper-wrapper").append(text);
+                        }else if (result5)
+                        {
+                            var text = '<div class="swiper-slide">'+
+                                '<div class="box selectPOI" id="5">'+
+                                '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                '<div class="restaurant-content">'+
+                                '<label>Legal Description</label>'+
+                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                            $(".swiper-wrapper").append(text);
+                        }else if (result6)
+                        {
+                            var text = '<div class="swiper-slide">'+
+                                '<div class="box selectPOI" id="5">'+
+                                '<h1>' + property['address']['oneLine'] + '</h1>'+
+                                '<div class="restaurant-content">'+
+                                '<label>Legal Description</label>'+
+                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                            $(".swiper-wrapper").append(text);
+                        }
+                        else if (result7)
                         {
                             var text = '<div class="swiper-slide">'+
                                 '<div class="box selectPOI" id="5">'+
