@@ -122,6 +122,8 @@ function postData(url = ``, data = {}) {
                 $("#poiContent").show();
                 for (const property of data.property) {
                     const pattern = /l.([0-9]*)-([0-9]*)/gi;
+                    const patt2 = /lots.([0-9]*).([0-9]*).&.([0-9]*)/gi;
+                    const patt3 = /lts.([0-9]*).([0-9]*).&.([0-9]*)/gi;
                     const patt1 = /lot.([0-9]*)&([0-9]*)/gi;
                     if(property['summary']['legal1']) {
                         var result = property['summary']['legal1'].match(pattern);
