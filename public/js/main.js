@@ -21,6 +21,14 @@ $("#searchByProperty").click(function(e){
     codeAddress(address);
 });
 
+$("#searchByPropertyVacant").click(function(e){
+    e.preventDefault();
+    ipage =1;
+    $('.swiper-wrapper').empty();
+    const address = $("#search").val();
+    codeAddress(address,true);
+});
+
 
 $('#searchByAddress').click(function (e) {
     e.preventDefault();
@@ -37,7 +45,7 @@ $('#searchByAddress').click(function (e) {
     });
 });
 
-function getlist(lat,lng)
+function getlist(lat,lng,isVacant)
 {
     var totalPages;
     $.ajax({
@@ -52,7 +60,7 @@ function getlist(lat,lng)
         complete:function()
         {
             for (let i = 1; i <= totalPages; i++) {
-                console.log(postData('/allpropertiesList', {lat: lat, lng: lng, page: i, zip: postalcode}));
+                console.log(postData('/allpropertiesList', {lat: lat, lng: lng, page: i, zip: postalcode},isVacant));
             }
             //getpageData(lat,lng,totalPages);
 
@@ -78,7 +86,7 @@ function getlist(lat,lng)
         timeout: 5000
     });
 }
-function buildUrl(url, parameters) {
+function buildUrl(url, parameters,isVacant) {
     let qs = "";
     for (const key in parameters) {
         if (parameters.hasOwnProperty(key)) {
@@ -94,7 +102,7 @@ function buildUrl(url, parameters) {
 
     return url;
 }
-function postData(url = ``, data = {}) {
+function postData(url = ``, data = {},isVacant) {
     // Default options are marked with *
     fetch(buildUrl(url,data), {
         method: "get", // *GET, POST, PUT, DELETE, etc.
@@ -118,90 +126,99 @@ function postData(url = ``, data = {}) {
         .then(function(data) {
             console.log(data);
             if(data) {
-
                 $("#poiContent").show();
+
                 for (const property of data.property) {
-                    const pattern = /l.([0-9]*).-.([0-9]*)/gi;
-                    const patt2 = /lots.([0-9]*).([0-9]*).&.([0-9]*)/gi;
-                    const patt3 = /lts.([0-9]*).([0-9]*).&.([0-9]*)/gi;
-                    const patt1 = /lot.([0-9]*).&.([0-9]*)/gi;
-                    const patt6 = /lts.([0-9]*).([0-9]*).&.([0-9]*)/gi;
-                    const patt4 = /lts.([0-9]*).([0-9]*).([&]*).([0-9]*)/gi;
-                    const patt5 = /lts.([0-9]*).([0-9]*).(&[0-9]*)/gi;
-                    if(property['summary']['legal1']) {
-                        var result = property['summary']['legal1'].match(pattern);
-                        var result2 = property['summary']['legal1'].match(patt1);
-                        var result3 = property['summary']['legal1'].match(patt2);
-                        var result4 = property['summary']['legal1'].match(patt3);
-                        var result5 = property['summary']['legal1'].match(patt4);
-                        var result6 = property['summary']['legal1'].match(patt5);
-                        var result7= property['summary']['legal1'].match(patt6);
-                        if (result) {
-                            var text = '<div class="swiper-slide">'+
-                                '<div class="box selectPOI" id="5">'+
-                                '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                '<div class="restaurant-content">'+
-                                '<label>Legal Description</label>'+
-                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                            $(".swiper-wrapper").append(text);
-                        }
-                        else if (result2)
-                        {
-                            var text = '<div class="swiper-slide">'+
-                                '<div class="box selectPOI" id="5">'+
-                                '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                '<div class="restaurant-content">'+
-                                '<label>Legal Description</label>'+
-                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                            $(".swiper-wrapper").append(text);
-                        }else if (result3)
-                        {
-                            var text = '<div class="swiper-slide">'+
-                                '<div class="box selectPOI" id="5">'+
-                                '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                '<div class="restaurant-content">'+
-                                '<label>Legal Description</label>'+
-                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                            $(".swiper-wrapper").append(text);
-                        }else if (result4)
-                        {
-                            var text = '<div class="swiper-slide">'+
-                                '<div class="box selectPOI" id="5">'+
-                                '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                '<div class="restaurant-content">'+
-                                '<label>Legal Description</label>'+
-                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                            $(".swiper-wrapper").append(text);
-                        }else if (result5)
-                        {
-                            var text = '<div class="swiper-slide">'+
-                                '<div class="box selectPOI" id="5">'+
-                                '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                '<div class="restaurant-content">'+
-                                '<label>Legal Description</label>'+
-                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                            $(".swiper-wrapper").append(text);
-                        }else if (result6)
-                        {
-                            var text = '<div class="swiper-slide">'+
-                                '<div class="box selectPOI" id="5">'+
-                                '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                '<div class="restaurant-content">'+
-                                '<label>Legal Description</label>'+
-                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                            $(".swiper-wrapper").append(text);
-                        }
-                        else if (result7)
-                        {
-                            var text = '<div class="swiper-slide">'+
-                                '<div class="box selectPOI" id="5">'+
-                                '<h1>' + property['address']['oneLine'] + '</h1>'+
-                                '<div class="restaurant-content">'+
-                                '<label>Legal Description</label>'+
-                                '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
-                            $(".swiper-wrapper").append(text);
+                    if(isVacant)
+                    {
+                        if(property['summary']['propclass']){
+                            if(property['summary']['propclass'] .toLowerCase().includes("vacant")) {
+                                var text = '<div class="swiper-slide">' +
+                                    '<div class="box selectPOI" id="5">' +
+                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                                    '<div class="restaurant-content">' +
+                                    '<label>Legal Description</label>' +
+                                    '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                $(".swiper-wrapper").append(text);
+                            }
                         }
 
+                    }
+                    else {
+                        const pattern = /l.([0-9]*).-.([0-9]*)/gi;
+                        const patt2 = /lots.([0-9]*).([0-9]*).&.([0-9]*)/gi;
+                        const patt3 = /lts.([0-9]*).([0-9]*).&.([0-9]*)/gi;
+                        const patt1 = /lot.([0-9]*).&.([0-9]*)/gi;
+                        const patt6 = /lts.([0-9]*).([0-9]*).&.([0-9]*)/gi;
+                        const patt4 = /lts.([0-9]*).([0-9]*).([&]*).([0-9]*)/gi;
+                        const patt5 = /lts.([0-9]*).([0-9]*).(&[0-9]*)/gi;
+                        if (property['summary']['legal1']) {
+                            var result = property['summary']['legal1'].match(pattern);
+                            var result2 = property['summary']['legal1'].match(patt1);
+                            var result3 = property['summary']['legal1'].match(patt2);
+                            var result4 = property['summary']['legal1'].match(patt3);
+                            var result5 = property['summary']['legal1'].match(patt4);
+                            var result6 = property['summary']['legal1'].match(patt5);
+                            var result7 = property['summary']['legal1'].match(patt6);
+                            if (result) {
+                                var text = '<div class="swiper-slide">' +
+                                    '<div class="box selectPOI" id="5">' +
+                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                                    '<div class="restaurant-content">' +
+                                    '<label>Legal Description</label>' +
+                                    '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                $(".swiper-wrapper").append(text);
+                            } else if (result2) {
+                                var text = '<div class="swiper-slide">' +
+                                    '<div class="box selectPOI" id="5">' +
+                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                                    '<div class="restaurant-content">' +
+                                    '<label>Legal Description</label>' +
+                                    '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                $(".swiper-wrapper").append(text);
+                            } else if (result3) {
+                                var text = '<div class="swiper-slide">' +
+                                    '<div class="box selectPOI" id="5">' +
+                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                                    '<div class="restaurant-content">' +
+                                    '<label>Legal Description</label>' +
+                                    '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                $(".swiper-wrapper").append(text);
+                            } else if (result4) {
+                                var text = '<div class="swiper-slide">' +
+                                    '<div class="box selectPOI" id="5">' +
+                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                                    '<div class="restaurant-content">' +
+                                    '<label>Legal Description</label>' +
+                                    '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                $(".swiper-wrapper").append(text);
+                            } else if (result5) {
+                                var text = '<div class="swiper-slide">' +
+                                    '<div class="box selectPOI" id="5">' +
+                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                                    '<div class="restaurant-content">' +
+                                    '<label>Legal Description</label>' +
+                                    '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                $(".swiper-wrapper").append(text);
+                            } else if (result6) {
+                                var text = '<div class="swiper-slide">' +
+                                    '<div class="box selectPOI" id="5">' +
+                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                                    '<div class="restaurant-content">' +
+                                    '<label>Legal Description</label>' +
+                                    '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                $(".swiper-wrapper").append(text);
+                            } else if (result7) {
+                                var text = '<div class="swiper-slide">' +
+                                    '<div class="box selectPOI" id="5">' +
+                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                                    '<div class="restaurant-content">' +
+                                    '<label>Legal Description</label>' +
+                                    '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
+                                $(".swiper-wrapper").append(text);
+                            }
+
+                        }
                     }
                 }
             }
@@ -341,7 +358,7 @@ function geolocate() {
 
 var geocoder;
 var communitydata;
-function codeAddress(address) {
+function codeAddress(address,isVacant = false) {
 
     geocoder = new google.maps.Geocoder();
     geocoder.geocode({
@@ -370,7 +387,7 @@ function codeAddress(address) {
                     init();
                 },
                 complete:function(){
-                    getlist(lat,lng)
+                    getlist(lat,lng,isVacant)
                     $.ajax({
                         type:'get',
                         url:'/getHouseInventry',

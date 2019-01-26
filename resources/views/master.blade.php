@@ -25,6 +25,8 @@
             <li class="nav-item">
                 <a class="nav-link" href="/location">Location</a>
             </li>
+            <li>
+                <a class="nav-link" href="/VacantProperties">Vacant Properties</a>
             </li>
         </ul>
     </div>

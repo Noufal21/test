@@ -13,6 +13,7 @@
 
 Route::get('/', 'homeController@home');
 Route::get('/location','homeController@location');
+Route::get('/VacantProperties','homeController@VacantProperties');
 
 
 
@@ -24,3 +25,4 @@ Route::get("getTotalPages",'AjaxController@getTotalPages');
 Route::post('getzipdata', 'AjaxController@getzipResponse');
 Route::post('getPropertyResponse','AjaxController@getPropertyResponse');
 Route::get('/getHouseInventry','AjaxController@getHouseInventry');
+Route::get("allVacantpropertiesList",'AjaxController@allVacantpropertiesList');

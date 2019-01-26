@@ -120,8 +120,8 @@ class AjaxController extends Controller
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 100,
+            CURLOPT_MAXREDIRS => 20,
+            CURLOPT_TIMEOUT => 1000,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
@@ -136,7 +136,7 @@ class AjaxController extends Controller
         curl_close($curl);
 
         if ($err) {
-            return '{"status": { "code": 999, "msg": "cURL Error #:" . $err."}}';
+            return '{"status": { "code": 999, "msg": "cURL Error #:"'. $err.'"}}';
         }else{
             return json_decode($response, true);
         }

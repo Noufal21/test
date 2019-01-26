@@ -15,4 +15,8 @@ class homeController extends Controller
     {
         return view('location');
     }
+    public function VacantProperties()
+    {
+        return view('VacantProperties');
+    }
 }
