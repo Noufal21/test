@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class AjaxController extends Controller
 {
-    private $obapiurl = 'http://search.onboard-apis.com', $obapikey = '17644c3fd3774717b469fb3d146d4a92';
+    private $obapiurl = 'http://search.onboard-apis.com', $obapikey = '9d078487e223b1c4d54c3f3a3f628803';
 
 
     public function getzipResponse(Request $request)
@@ -120,13 +120,16 @@ class AjaxController extends Controller
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 20,
+            CURLOPT_MAXREDIRS => 10,
             CURLOPT_TIMEOUT => 1000,
+            CURLOPT_TCP_KEEPALIVE => 50,
+            CURLOPT_TCP_KEEPIDLE => 100,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
                 "accept: application/json",
                 "apikey: " . ($apiKey!=''?$apiKey:$this->obapikey)
+
             )
         ));
 

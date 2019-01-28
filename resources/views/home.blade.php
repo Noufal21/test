@@ -10,7 +10,12 @@
                         <input class="btn btn-primary" type="button" value="Search" id="searchByProperty">
                     </div>
                 </div>
+
+
                 <div class=" map" id="map"></div>
+
+
+
                 <div class="row">
                     <div class="col-md-6 pd-col brd" id="houseDiv">
                         <h2 class="ageDemo mt-30">Housing Inventory</h2>
@@ -65,6 +70,7 @@
                         <div id="chartincomediv"> </div>
                     </div>
                 </div>
+
             </div>
 
 
