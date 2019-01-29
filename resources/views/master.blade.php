@@ -26,7 +26,7 @@
                 <a class="nav-link" href="/location">Location</a>
             </li>
             <li>
-                <a class="nav-link" href="/VacantProperties">Vacant Properties</a>
+                <a class="nav-link" href="/VacantProperties">Vacant lots</a>
             </li>
         </ul>
     </div>
