@@ -692,4 +692,3 @@ function init() {
     $('#map').css('height','450px');
 }
 
-
