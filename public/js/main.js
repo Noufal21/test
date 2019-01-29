@@ -664,7 +664,7 @@ function init() {
             zoom: 13,
             center: new google.maps.LatLng(lat, lng)
         },
-        map = new google.maps.Map(document.getElementById("map"), myOptions);
+        map = new google.maps.Map(document.getElementById("map"), myOptions)
 
     var marker;
     //console.log(locations);
