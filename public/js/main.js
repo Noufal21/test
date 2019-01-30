@@ -133,9 +133,9 @@ function postData(url = ``, data = {},isVacant) {
                     {
                         if(property['summary']['propclass']){
                             if(property['summary']['propclass'] .toLowerCase().includes("vacant")) {
-                                var text = '<div class="swiper-slide">' +
-                                    '<div class="box selectPOI" id="5">' +
-                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                                var text = '<div class="swiper-slide" ajaxlink= "/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'"\>'  +
+                                    '<div class="box selectPOI">' +
+                                    '<a class="h1" target="_blank" href="/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'">' + property['address']['oneLine'] + '</a>' +
                                     '<div class="restaurant-content">' +
                                     '<label>Legal Description</label>' +
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
@@ -160,16 +160,16 @@ function postData(url = ``, data = {},isVacant) {
                             var result5 = property['summary']['legal1'].match(patt4);
                             var result6 = property['summary']['legal1'].match(patt5);
                             var result7 = property['summary']['legal1'].match(patt6);
-                            if (result) {
-                                var text = '<div class="swiper-slide">' +
-                                    '<div class="box selectPOI" id="5">' +
-                                    '<h1>' + property['address']['oneLine'] + '</h1>' +
+                            if (result || result2 || result3 || result4 || result5 || result6 || result7) {
+                                var text = '<div class="swiper-slide">'  +
+                                    '<div class="box selectPOI">' +
+                                    '<a class="h1" target="_blank" href="/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'">' + property['address']['oneLine'] + '</a>' +
                                     '<div class="restaurant-content">' +
                                     '<label>Legal Description</label>' +
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
                                 $(".swiper-wrapper").append(text);
-                            } else if (result2) {
-                                var text = '<div class="swiper-slide">' +
+                            } /*else if (result2) {
+                                var text = '<div class="swiper-slide" ajaxlink= "/getOwnerDetail/'+property["address"]["line1"]+'/' +property["address"]["line2"]+'"\>' +
                                     '<div class="box selectPOI" id="5">' +
                                     '<h1>' + property['address']['oneLine'] + '</h1>' +
                                     '<div class="restaurant-content">' +
@@ -177,7 +177,7 @@ function postData(url = ``, data = {},isVacant) {
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
                                 $(".swiper-wrapper").append(text);
                             } else if (result3) {
-                                var text = '<div class="swiper-slide">' +
+                                var text = '<div class="swiper-slide" ajaxlink= "/getOwnerDetail/'+property["address"]["line1"]+'/' +property["address"]["line2"]+'"\>'  +
                                     '<div class="box selectPOI" id="5">' +
                                     '<h1>' + property['address']['oneLine'] + '</h1>' +
                                     '<div class="restaurant-content">' +
@@ -185,7 +185,7 @@ function postData(url = ``, data = {},isVacant) {
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
                                 $(".swiper-wrapper").append(text);
                             } else if (result4) {
-                                var text = '<div class="swiper-slide">' +
+                                var text = '<div class="swiper-slide" ajaxlink= "/getOwnerDetail/'+property["address"]["line1"]+'/' +property["address"]["line2"]+'"\>'  +
                                     '<div class="box selectPOI" id="5">' +
                                     '<h1>' + property['address']['oneLine'] + '</h1>' +
                                     '<div class="restaurant-content">' +
@@ -193,7 +193,7 @@ function postData(url = ``, data = {},isVacant) {
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
                                 $(".swiper-wrapper").append(text);
                             } else if (result5) {
-                                var text = '<div class="swiper-slide">' +
+                                var text = '<div class="swiper-slide" ajaxlink= "/getOwnerDetail/'+property["address"]["line1"]+'/' +property["address"]["line2"]+'"\>'  +
                                     '<div class="box selectPOI" id="5">' +
                                     '<h1>' + property['address']['oneLine'] + '</h1>' +
                                     '<div class="restaurant-content">' +
@@ -201,7 +201,7 @@ function postData(url = ``, data = {},isVacant) {
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
                                 $(".swiper-wrapper").append(text);
                             } else if (result6) {
-                                var text = '<div class="swiper-slide">' +
+                                var text = '<div class="swiper-slide" ajaxlink= "/getOwnerDetail/'+property["address"]["line1"]+'/' +property["address"]["line2"]+'"\>'  +
                                     '<div class="box selectPOI" id="5">' +
                                     '<h1>' + property['address']['oneLine'] + '</h1>' +
                                     '<div class="restaurant-content">' +
@@ -209,14 +209,14 @@ function postData(url = ``, data = {},isVacant) {
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
                                 $(".swiper-wrapper").append(text);
                             } else if (result7) {
-                                var text = '<div class="swiper-slide">' +
+                                var text = '<div class="swiper-slide" ajaxlink= "/getOwnerDetail/'+property["address"]["line1"]+'/' +property["address"]["line2"]+'"\>'  +
                                     '<div class="box selectPOI" id="5">' +
                                     '<h1>' + property['address']['oneLine'] + '</h1>' +
                                     '<div class="restaurant-content">' +
                                     '<label>Legal Description</label>' +
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
                                 $(".swiper-wrapper").append(text);
-                            }
+                            }*/
 
                         }
                     }
@@ -287,8 +287,10 @@ function f() {
         direction: 'vertical',
         slideToClickedSlide: false,
         on:{
-            click: function(){
+            click: function(swiper, e){
+               // var clicked = $(e.target);
                 //openInfoModal(this.clickedIndex+1);
+                //console.log(clicked);
             },
         },
         navigation: {
@@ -692,3 +694,40 @@ function init() {
     $('#map').css('height','450px');
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// Model Opening Showing owner detail
+
+$('.swiper-slide').click(function () {
+    Alert("HELLO");
+})

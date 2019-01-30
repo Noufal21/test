@@ -63,7 +63,7 @@ a:focus {
     text-decoration: none;
     outline: none;
 }
-
+.h1,
 h1,
 h2,
 h3,
@@ -78,7 +78,7 @@ h6 {
     font-weight: 700;
     color: #43575f;
 }
-
+.h1,
 h1 {
     font-size: 24px;
     margin-bottom: 20px;
@@ -331,7 +331,7 @@ body .box.active {
 body .swiper-slide-active .box{
     background-color: #43575f;
 }
-body .swiper-slide-active .box h1{
+body .swiper-slide-active .box .h1{
     color: #fff;
 }
 body .box .address img {
@@ -492,7 +492,7 @@ body .swiper-button-prev{background-image: none;top:0;}
 body .swiper-button-next {right: -15px;}
 body .swiper-button-prev {left: -5px;}
 body .swiper-container {overflow: hidden; height:700px;}
-.swiper-container .box.active h1 {
+.swiper-container .box.active .h1 {
     color: #fff;
 }
 
@@ -511,7 +511,7 @@ body .search-reduce > input.form-control{width:54%}
 .selecting-area label span img {margin-left: 3px;}
 .selecting-area > div:first-child {padding-left: 0;border-right: 1px solid #43575f;}
 .selecting-area > div:last-child {padding-right:0;}
-.swiper-container .box h1 {margin-bottom: 10px;}
+.swiper-container .box .h1 {margin-bottom: 10px;}
 .swiper-container small {font-size: 13px; color: #43575f;font-weight:bold;margin-bottom:10px; display:inline-block;}
 .swiper-container .swiper-slide-active small {color: #fff;}
 .restaurant-content { float: left;width: 100%;margin-bottom:10px;font-size:13px;color:#a8a8a8;font-weight:bold;}

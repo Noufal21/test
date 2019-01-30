@@ -24,9 +24,10 @@ class AjaxController extends Controller
         $boundary = $this->getAreaBoundary($geoARRAY[0]);
         return response($boundary['response']['result']['package']['item'][0]['boundary']);
     }
-    public function test()
+    public function ExtendedDetail($line1, $line2)
     {
-        return view('test');
+        $result = $this->getPropertyExtendDetail(urlencode($line1), urlencode($line2));
+        return view('test')->with('result',$result);
     }
 
     public function allpropertiesList(Request $request)
@@ -101,6 +102,11 @@ class AjaxController extends Controller
         $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?address='.$address;
         return $this->curlPOIAPI($url);
     }
+    private function getPropertyExtendDetail($line1,$line2){
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/expandedprofile?address1='.$line1.'&address2='.$line2;
+        return $this->curlPOIAPI($url);
+    }
+
     private function getAreaHierarchy($lat,$long){
         $location = urlencode($long.','.$lat);
         $url = $this->obapiurl . "/areaapi/v2.0.0/hierarchy/lookup?WKTString=POINT(" . $location. ")&geoType=ZI";
