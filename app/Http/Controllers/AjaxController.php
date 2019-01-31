@@ -28,6 +28,7 @@ class AjaxController extends Controller
     {
         $result = $this->getPropertyExtendDetail(urlencode($line1), urlencode($line2));
         $Propertyid = $result["property"][0]["identifier"]["obPropId"];
+
         $propertyAssResult = $this->getAssessmentHistory($Propertyid);
         $AVMResult = $this->getAttomAVM(urlencode($line1), urlencode($line2));
         return view('test')->with('result',$result)->with('AssessmentResult',$propertyAssResult)->with("AVMResult",$AVMResult);
