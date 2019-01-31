@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class AjaxController extends Controller
 {
-    private $obapiurl = 'http://search.onboard-apis.com', $obapikey = '9d078487e223b1c4d54c3f3a3f628803';
+    private $obapiurl = 'http://search.onboard-apis.com', $obapikey = '60dca8df1d5318fe0c262baf013f185e';
 
 
     public function getzipResponse(Request $request)
