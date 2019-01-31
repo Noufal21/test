@@ -133,7 +133,7 @@ function postData(url = ``, data = {},isVacant) {
                     {
                         if(property['summary']['propclass']){
                             if(property['summary']['propclass'] .toLowerCase().includes("vacant")) {
-                                var text = '<div class="swiper-slide" ajaxlink= "/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'"\>'  +
+                                var text = '<div class="swiper-slide">'  +
                                     '<div class="box selectPOI">' +
                                     '<a class="h3" target="_blank" href="/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'">' + property['address']['oneLine'] + '</a>' +
                                     '<div class="restaurant-content">' +
