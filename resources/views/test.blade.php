@@ -99,10 +99,11 @@
                                     <br>
                                     <strong>eventDate: </strong>
                                     @if(isset($AVMResult["property"][0]["avm"]["eventDate"]))
-                                        <span>$AVMResult["property"][0]["avm"]["eventDate"]</span>
+                                        <span>{{$AVMResult["property"][0]["avm"]["eventDate"]}}</span>
+                                        @else
 
+                                        <span>NA</span>
                                     @endif
-                                    <span>NA</span>
                                     <br>
                                 </td>
                             </tr>
