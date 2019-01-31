@@ -135,7 +135,7 @@ function postData(url = ``, data = {},isVacant) {
                             if(property['summary']['propclass'] .toLowerCase().includes("vacant")) {
                                 var text = '<div class="swiper-slide" ajaxlink= "/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'"\>'  +
                                     '<div class="box selectPOI">' +
-                                    '<a class="h1" target="_blank" href="/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'">' + property['address']['oneLine'] + '</a>' +
+                                    '<a class="h3" target="_blank" href="/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'">' + property['address']['oneLine'] + '</a>' +
                                     '<div class="restaurant-content">' +
                                     '<label>Legal Description</label>' +
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
@@ -163,7 +163,7 @@ function postData(url = ``, data = {},isVacant) {
                             if (result || result2 || result3 || result4 || result5 || result6 || result7) {
                                 var text = '<div class="swiper-slide">'  +
                                     '<div class="box selectPOI">' +
-                                    '<a class="h1" target="_blank" href="/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'">' + property['address']['oneLine'] + '</a>' +
+                                    '<a class="h3" target="_blank" href="/getOwnerDetail/'+encodeURI(property["address"]["line1"])+'/' +encodeURI(property["address"]["line2"])+'">' + property['address']['oneLine'] + '</a>' +
                                     '<div class="restaurant-content">' +
                                     '<label>Legal Description</label>' +
                                     '<small>' + property['summary']['legal1'] + '</small></div></div></div>';
