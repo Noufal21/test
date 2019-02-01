@@ -17,20 +17,23 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <strong>Owner Name: </strong>
-                                        @foreach ($result["property"][0]["assessment"]["owner"]["owner1"] as $a)
-                                            <span >{{$a}}</span>
+
+                                        @foreach ($AVMResult["property"][0]["owner"] as $key => $value)
+                                            @if(gettype($value) == "array")
+                                                <strong>{{$key}} </strong>
+                                            <br/>
+                                                @foreach ($value as $k => $v)
+                                                    <strong>{{$k}} : </strong>
+                                                    <span >{{$v}}</span>
+                                                    <br/>
+                                                @endforeach
+                                                <hr/>
+                                            @else
+                                                <strong>{{$key}} : </strong>
+                                                <span >{{$value}}</span>
+                                                <br>
+                                            @endif
                                         @endforeach
-                                        <br>
-                                        @if($result["property"][0]["assessment"]["owner"]["owner2"])
-                                            <strong>Owner Name 2: </strong>
-                                            @foreach ($result["property"][0]["assessment"]["owner"]["owner2"] as $a)
-                                                <span>{{$a}}</span>
-                                            @endforeach
-                                        @endif
-                                        <br>
-                                        <strong>Address: </strong>
-                                        <span >{{$result["property"][0]["assessment"]["owner"]["mailingAddressOneLine"]}}</span>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -48,11 +51,11 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <strong>lENDER INFORMATION </strong>
+                                        <strong>LENDER INFORMATION </strong>
                                         <br>
                                         @if($AVMResult["property"][0]["mortgage"]["lender"])
                                             @foreach ($AVMResult["property"][0]["mortgage"]["lender"] as $key => $value)
-                                                <strong>{{$key}} </strong>
+                                                <strong>{{$key}} : </strong>
                                                 <span >{{$value}}</span>
                                                 <br>
                                             @endforeach
@@ -61,17 +64,16 @@
                                             <br>
                                             @if($AVMResult["property"][0]["mortgage"]["title"])
                                                 @foreach ($AVMResult["property"][0]["mortgage"]["title"] as $key => $value)
-                                                    <strong>{{$key}} </strong>
+                                                    <strong>{{$key}} : </strong>
                                                     <span >{{$value}}</span>
                                                     <br>
                                                     @endforeach
                                                 @endif
                                                 <hr/>
-                                                <br>
                                                 @if($AVMResult["property"][0]["mortgage"])
                                                     @foreach ($AVMResult["property"][0]["mortgage"] as $key => $value)
                                                         @if(gettype($value) != "array")
-                                                            <strong>{{$key}} </strong>
+                                                            <strong>{{$key}} : </strong>
                                                             <span >{{$value}}</span>
                                                             <br>
                                                         @endif
