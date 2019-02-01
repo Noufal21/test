@@ -76,6 +76,76 @@
                         </div></div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="card-heading">
+                        <h4>Sale</h4>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <table cellspacing="0" style="border-collapse:collapse;">
+                                <tbody>
+                                <tr>
+                                    <td>
+
+                                        @foreach ($result["property"][0]["sale"] as $key => $value)
+                                            @if(gettype($value) == "array")
+                                                <strong>{{$key}} </strong>
+                                                <br/>
+                                                @foreach ($value as $k => $v)
+                                                    <strong>{{$k}} : </strong>
+                                                    <span >{{$v}}</span>
+                                                    <br/>
+                                                @endforeach
+                                                <hr/>
+                                            @else
+                                                <strong>{{$key}} : </strong>
+                                                <span >{{$value}}</span>
+                                                <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card-heading">
+                        <h4>Assessment</h4>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <table  cellspacing="0" style="border-collapse:collapse;">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        @if($result["property"][0]["assessment"])
+                                            @foreach ($result["property"][0]["assessment"] as $key => $value)
+                                                @if(gettype($value) != "array")
+                                                    <strong>{{$key}} : </strong>
+                                                    <span >{{$value}}</span>
+                                                    <br>
+                                                @else
+                                                    <strong>{{$key}}  </strong>
+                                                    <br/>
+                                                    @foreach ($value as $k => $v)
+                                                        <strong>{{$k}} : </strong>
+                                                        <span >{{$v}}</span>
+                                                        <br>
+                                                    @endforeach
+                                                    <hr/>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div></div>
+                </div>
+            </div>
         </div>
     </div>
 

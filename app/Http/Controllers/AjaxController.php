@@ -26,12 +26,9 @@ class AjaxController extends Controller
     }
     public function ExtendedDetail($line1, $line2)
     {
-        $result = $this->getPropertyExtendDetail(urlencode($line1), urlencode($line2));
-        $Propertyid = $result["property"][0]["identifier"]["obPropId"];
-
-        $propertyAssResult = $this->getAssessmentHistory($Propertyid);
+        $result = $this->getallevent(urlencode($line1), urlencode($line2));
         $AVMResult = $this->getdetailmortgageowner(urlencode($line1), urlencode($line2));
-        return view('DetailPage')->with('result',$result)->with('AssessmentResult',$propertyAssResult)->with("AVMResult",$AVMResult);
+        return view('DetailPage')->with('result',$result)->with("AVMResult",$AVMResult);
     }
 
     public function allpropertiesList(Request $request)
@@ -118,6 +115,10 @@ class AjaxController extends Controller
         $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detailmortgageowner?address1='.$line1.'&address2='.$line2;
         return $this->curlPOIAPI($url);
     }
+    private function getallevent($line1,$line2){
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/allevents/detail?address1='.$line1.'&address2='.$line2;
+        return $this->curlPOIAPI($url);
+    }
     private function getAreaHierarchy($lat,$long){
         $location = urlencode($long.','.$lat);
         $url = $this->obapiurl . "/areaapi/v2.0.0/hierarchy/lookup?WKTString=POINT(" . $location. ")&geoType=ZI";
@@ -127,6 +128,21 @@ class AjaxController extends Controller
     private function getAreaBoundary($areaid){
         $url = $this->obapiurl ."/areaapi/v2.0.0/boundary/detail?AreaId=".$areaid;
         return $this->curlPOIAPI($url);
+    }
+    private function getPublicSchoolAddressById($schoolID){
+
+        $url = $this->obapiurl ."/propertyapi/v1.0.0/school/detail?id=".$schoolID;
+        return $this->curlSchoolAPI($url);
+    }
+
+    private function getSchoolSampleCode($add1=null,$add2=null){
+        $url = $this->obapiurl ."/propertyapi/v1.0.0/property/detailwithschools?address1=$add1&address2=$add2";
+        return $this->curlSchoolAPI($url);
+    }
+
+    private function getSchoolSamplePrivateCode($lat,$long){
+        $url = $this->obapiurl ."/propertyapi/v1.0.0/school/snapshot?latitude=$lat&longitude=$long&radius=10&filetypetext=private";
+        return $this->curlSchoolAPI($url);
     }
     private function curlPOIAPI($url, $apiKey = null){
 
