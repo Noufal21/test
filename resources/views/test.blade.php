@@ -58,7 +58,7 @@
                                                     <span >{{$value}}</span>
                                                     <br>
                                                 @else
-                                                    <strong>{{$key}} : </strong>
+                                                    <strong>{{$key}}  </strong>
                                                     <br/>
                                                     @foreach ($value as $k => $v)
                                                         <strong>{{$k}} : </strong>
