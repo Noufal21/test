@@ -31,7 +31,7 @@ class AjaxController extends Controller
 
         $propertyAssResult = $this->getAssessmentHistory($Propertyid);
         $AVMResult = $this->getdetailmortgageowner(urlencode($line1), urlencode($line2));
-        return view('test')->with('result',$result)->with('AssessmentResult',$propertyAssResult)->with("AVMResult",$AVMResult);
+        return view('DetailPage')->with('result',$result)->with('AssessmentResult',$propertyAssResult)->with("AVMResult",$AVMResult);
     }
 
     public function allpropertiesList(Request $request)
