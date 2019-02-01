@@ -48,14 +48,35 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <strong>Mortgage Title: </strong>
-                                        @if($result["property"][0]["assessment"]["mortgage"]["title"])
-                                            @foreach ($result["property"][0]["assessment"]["mortgage"]["title"] as $a)
-
-                                                <span >{{$a}}</span>
-
-
+                                        <strong>lENDER INFORMATION </strong>
+                                        <br>
+                                        @if($AVMResult["property"][0]["mortgage"]["lender"])
+                                            @foreach ($AVMResult["property"][0]["mortgage"]["lender"] as $key => $value)
+                                                <strong>{{$key}} </strong>
+                                                <span >{{$value}}</span>
+                                                <br>
                                             @endforeach
+                                        <hr>
+                                            <strong>TITLE </strong>
+                                            <br>
+                                            @if($AVMResult["property"][0]["mortgage"]["title"])
+                                                @foreach ($AVMResult["property"][0]["mortgage"]["title"] as $key => $value)
+                                                    <strong>{{$key}} </strong>
+                                                    <span >{{$value}}</span>
+                                                    <br>
+                                                    @endforeach
+                                                @endif
+                                                <hr/>
+                                                <br>
+                                                @if($AVMResult["property"][0]["mortgage"])
+                                                    @foreach ($AVMResult["property"][0]["mortgage"] as $key => $value)
+                                                        @if(gettype($value) != "array")
+                                                            <strong>{{$key}} </strong>
+                                                            <span >{{$value}}</span>
+                                                            <br>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
                                         @else
                                             <span>NA</span>
                                         @endif

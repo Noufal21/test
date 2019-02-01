@@ -30,7 +30,7 @@ class AjaxController extends Controller
         $Propertyid = $result["property"][0]["identifier"]["obPropId"];
 
         $propertyAssResult = $this->getAssessmentHistory($Propertyid);
-        $AVMResult = $this->getAttomAVM(urlencode($line1), urlencode($line2));
+        $AVMResult = $this->getdetailmortgageowner(urlencode($line1), urlencode($line2));
         return view('test')->with('result',$result)->with('AssessmentResult',$propertyAssResult)->with("AVMResult",$AVMResult);
     }
 
@@ -114,8 +114,8 @@ class AjaxController extends Controller
         $url = $this->obapiurl . '/propertyapi/v1.0.0/assessmenthistory/detail?id='.$id;
         return $this->curlPOIAPI($url);
     }
-    private function getAttomAVM($line1,$line2){
-        $url = $this->obapiurl . '/propertyapi/v1.0.0/attomavm/detail?address1='.$line1.'&address2='.$line2;
+    private function getdetailmortgageowner($line1,$line2){
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detailmortgageowner?address1='.$line1.'&address2='.$line2;
         return $this->curlPOIAPI($url);
     }
     private function getAreaHierarchy($lat,$long){
