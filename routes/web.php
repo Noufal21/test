@@ -26,3 +26,7 @@ Route::post('getzipdata', 'AjaxController@getzipResponse');
 Route::post('getPropertyResponse','AjaxController@getPropertyResponse');
 Route::get('/getHouseInventry','AjaxController@getHouseInventry');
 Route::get("allVacantpropertiesList",'AjaxController@allVacantpropertiesList');
+
+
+
+Route::get('/school','AjaxController@school');

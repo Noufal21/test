@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\View\View;
+use vendor\project\StatusTest;
 
 class AjaxController extends Controller
 {
@@ -91,12 +93,79 @@ class AjaxController extends Controller
     }
     public function getPropertyResponse(Request $request)
     {
+
         $address = $request->input('address');
-
         $propertyInfo = $this->getPropertyDetail($address);
-        return response($propertyInfo["property"][0]["summary"]["legal1"]);
-    }
+        $final_array = $this->getSchoolDemographicData($propertyInfo["property"][0]["location"]["latitude"],$propertyInfo["property"][0]["location"]["longitude"],$propertyInfo["property"][0]["address"]["line1"],$propertyInfo["property"][0]["address"]["line2"]);
 
+        //$context = array("legaladdress" => $propertyInfo["property"][0]["summary"]["legal1"], "view" => view('schoolPartialView')->with("$final_array",$final_array));
+        $psArray=array();
+        $psArray["legaladdress"] =$propertyInfo["property"][0]["summary"]["legal1"];
+        $psArray["view"] = (String) view('schoolPartialView')->with("final_array",$final_array);
+        $psArray["final_array"] = $final_array;
+        $psArray["lat"] = $propertyInfo["property"][0]["location"]["latitude"];
+        $psArray["lng"] = $propertyInfo["property"][0]["location"]["longitude"];
+
+        return $psArray;
+
+    }
+    public function school()
+    {
+        $context = array("title" => "My New Post", "body" => "This is my first post!");
+        return view('schoolPartialView')->with("data",$context);
+    }
+    private function getSchoolDemographicData($lat,$lng,$line1,$line2)
+    {
+        $allPrivateSchools = $this->getSchoolSamplePrivateCode($lat,$lng);
+        $psArray=array();
+        if ($allPrivateSchools['status']['code'] == 0) {
+
+            foreach($allPrivateSchools['school'] as $pvt_s=>$private_school){
+                $psArray[$pvt_s]['OBInstID'] = $private_school['Identifier']['OBInstID'];
+                $psArray[$pvt_s]['InstitutionName'] = $private_school['School']['InstitutionName'];
+                $psArray[$pvt_s]['GSTestRating'] = $private_school['School']['GSTestRating'];
+                $psArray[$pvt_s]['gradelevel1lotext'] = $private_school['School']['gradelevel1lotext'];
+                $psArray[$pvt_s]['gradelevel1hitext'] = $private_school['School']['gradelevel1hitext'];
+                $psArray[$pvt_s]['Filetypetext'] = $private_school['School']['Filetypetext'];
+                $psArray[$pvt_s]['geocodinglatitude'] = $private_school['School']['geocodinglatitude'];
+                $psArray[$pvt_s]['geocodinglongitude'] = $private_school['School']['geocodinglongitude'];
+                $psArray[$pvt_s]['distance'] = $private_school['School']['distance'];
+            }
+        }
+        $allPublicSchools = $this->getSchoolSampleCode(urlencode($line1),urlencode($line2));
+        if ($allPublicSchools['status']['code'] == 0) {
+            if(!empty($allPublicSchools['property'][0]["school"])){
+
+                if(!empty($psArray)){
+
+                    $final_array = array_merge($allPublicSchools['property'][0]["school"],$psArray);
+                }else{
+                    $final_array = $allPublicSchools['property'][0]["school"];
+                }
+
+                foreach($final_array as $k=>$schoolVal){
+                    if(!isset($schoolVal['OBInstID'])){
+                        continue;
+                    }
+                    $schoolDetails = $this->getPublicSchoolAddressById($schoolVal['OBInstID']);
+                    if ($schoolDetails['status']['code'] == 0) {
+                        $final_array[$k]['school_address']['locationaddress'] =  $schoolDetails['school'][0]['SchoolProfileAndDistrictInfo']['SchoolLocation']['locationaddress'];
+                        $final_array[$k]['school_address']['locationcity'] =  $schoolDetails['school'][0]['SchoolProfileAndDistrictInfo']['SchoolLocation']['locationcity'];
+                        $final_array[$k]['school_address']['stateabbrev'] =  $schoolDetails['school'][0]['SchoolProfileAndDistrictInfo']['SchoolLocation']['stateabbrev'];
+                        $final_array[$k]['school_address']['ZIP'] =  $schoolDetails['school'][0]['SchoolProfileAndDistrictInfo']['SchoolLocation']['ZIP'];
+
+                    }else{
+                        $final_array[$k]['school_address']['locationaddress'] = '';
+                        $final_array[$k]['school_address']['locationcity'] = '';
+                        $final_array[$k]['school_address']['stateabbrev'] = '';
+                        $final_array[$k]['school_address']['ZIP'] = '';
+                    }
+
+                }
+            }
+        }
+        return $final_array;
+    }
 
     private function getPropertyDetail($address){
         $address = urlencode($address);
@@ -132,17 +201,17 @@ class AjaxController extends Controller
     private function getPublicSchoolAddressById($schoolID){
 
         $url = $this->obapiurl ."/propertyapi/v1.0.0/school/detail?id=".$schoolID;
-        return $this->curlSchoolAPI($url);
+        return $this->curlPOIAPI($url);
     }
 
     private function getSchoolSampleCode($add1=null,$add2=null){
         $url = $this->obapiurl ."/propertyapi/v1.0.0/property/detailwithschools?address1=$add1&address2=$add2";
-        return $this->curlSchoolAPI($url);
+        return $this->curlPOIAPI($url);
     }
 
     private function getSchoolSamplePrivateCode($lat,$long){
         $url = $this->obapiurl ."/propertyapi/v1.0.0/school/snapshot?latitude=$lat&longitude=$long&radius=10&filetypetext=private";
-        return $this->curlSchoolAPI($url);
+        return $this->curlPOIAPI($url);
     }
     private function curlPOIAPI($url, $apiKey = null){
 

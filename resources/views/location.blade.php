@@ -1,5 +1,8 @@
 @extends('master')
 @section('title','MyPage Title')
+@section('head')
+    <link rel="stylesheet" href="css/school.css">
+    @endsection
 @section('content')
 
     <div class="container pt-3 ">
@@ -24,8 +27,19 @@
 
 
         </div>
+
+    </div>
+    <div class="row">
+        <div class="col-10"id="view">
+
+        </div>
     </div>
 
 @endsection
 
 
+@section('script')
+    <script>
+
+    </script>
+@endsection

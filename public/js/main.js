@@ -33,16 +33,48 @@ $("#searchByPropertyVacant").click(function(e){
 $('#searchByAddress').click(function (e) {
     e.preventDefault();
     const address = $("#searchAddress").val();
+
+    fetch("/getPropertyResponse", {
+        method: "post", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        body: JSON.stringify({address:address}),
+        headers: {
+            "Content-Type": "application/json",
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            // "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+    })
+        .then(function(response) {
+            if (response.status >= 200 && response.status < 300) {
+                return response.json()
+            }
+            throw new Error(response.statusText)
+        })
+        .then(function(data)
+        {
+            console.log(data);
+            $('#LegalAddress').text(data["legaladdress"]);
+            $('#view').html(data["view"]);
+
+            f1();
+            initMap(data["final_array"],data["lat"],data["lng"])
+        });
+        /*
     $.ajax({
         type:'post',
         url:'/getPropertyResponse',
         data:{address:address},
         success:function(data){
             console.log(data);
-            $('#LegalAddress').text(data);
+            $('#LegalAddress').text(data["legaladdress"]);
+            $('#view').html(data["view"]);
         },
         timeout: 5000
-    });
+    });*/
 });
 
 function getlist(lat,lng,isVacant)
@@ -300,8 +332,161 @@ function f() {
     });
 }
 
+function f1() {
+
+    var swiper = new Swiper('.swiper-container', {
+        slidesPerView: 3,
+        spaceBetween: 30,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        on:{
+            click: function(swiper, e){
+                // var clicked = $(e.target);
+                openInfoModal(this.clickedIndex+1);
+                //console.log(clicked);
+            },
+            slideChange:function () {
+
+                $(".selectSchool")[this.activeIndex+1].trigger("click");
+                openInfoModal(this.activeIndex+1);
+
+            }
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+
+        // Responsive breakpoints
+        breakpoints: {
+            // when window width is <= 640px
+            992: {
+                slidesPerView: 1,
+                spaceBetween: 30
+            }
+        }
+    });
+    $(function(){
+
+        setTimeout(function(){$('#body').css("min-height",(parseInt($( window ).height())-55)+"px");},500);
+
+        /* $("body").on("click",".swiper-button-next",function(){
+            var active1= $('.swiper-slide-active > .box').attr("id");
+            var active2= $('.swiper-slide-next > .box').attr("id");
+            var active3= $('.swiper-slide-next').next('.swiper-slide').find('.box').attr("id");
+
+            setTimeout(function(){ openInfoModal(parseFloat(active1)-1); },100);
+            setTimeout(function(){ openInfoModal(parseFloat(active2)-1); },100);
+            setTimeout(function(){ openInfoModal(parseFloat(active3)-1); },100);
 
 
+        }); */
+
+        $("body").on("click",".selectSchool",function(){
+
+            var schoolID = $(this).data("school");
+            var blockID = $(this).attr("id");
+            //Selection code
+            $(".whitebg").show();
+            $(".greybg").hide();
+            $(".selectSchool").removeClass("active");
+            $(".colorCode").removeClass("white");
+            $(this).find(".whitebg").hide();
+            $(this).find(".greybg").show();
+            $(this).addClass("active");
+            $(this).find('.colorCode').addClass("white");
+            //openInfoModal(parseFloat(blockID))
+            //Selection code End
+            /*$.ajax({
+                url: '/school-details?school_id='+schoolID,//AJAX URL WHERE THE LOGIC HAS BUILD
+                beforeSend: function() {
+                    $('.ajax-loader').show();
+                },
+                success:function(response) {
+                    $('.ajax-loader').hide();
+                    $(".schoolDetail").html(response);
+                    var focusElement = $(".schoolDetail");
+                    ScrollToTop(focusElement, function() { focusElement.focus(); });
+                    setTimeout(function(){ openInfoModal(parseFloat(blockID)); },100);
+                }
+            });*/
+        });
+    });
+    openInfoModal(1);
+    $(".selectSchool").first().trigger("click");
+}
+
+
+var gmarkers = [];
+function initMap(finalarray,lat,lng) {
+    var locations = [];
+    if(finalarray.length != 0) {
+        for (let $publicSchool of finalarray) {
+            if ($publicSchool['InstitutionName'] != '') {
+                locations.push([
+                    $publicSchool['InstitutionName'],
+                    $publicSchool['geocodinglatitude'],
+                    $publicSchool['geocodinglongitude'],
+                    "<div id='iw-container'><div class='iw-title'>" + $publicSchool['InstitutionName'] + "</div><div class='iw-content'><p>" + $publicSchool['school_address']['locationaddress'] + " " + $publicSchool['school_address']['locationcity'] + " " + $publicSchool['school_address']['stateabbrev'] + ", " + $publicSchool['school_address']['ZIP'] + "</p><p class='distance'>" + $publicSchool['distance'] + " Miles</p><br></div></div>"
+                ]);
+
+
+            }
+        }
+    }
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: new google.maps.LatLng(lat, lng),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+    //console.log(locations);
+
+    marker = new google.maps.Marker({
+        position: new google.maps.LatLng(lat, lng),
+        map: map,
+        animation: google.maps.Animation.DROP,
+        icon: 'img/4.png'
+    });
+
+
+    gmarkers.push(marker);
+
+
+
+    for (i = 0; i < locations.length; i++) {
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+            map: map,
+            animation: google.maps.Animation.DROP,
+            icon: 'img/1.png'
+        });
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infowindow.setContent(locations[i][3]);
+                infowindow.open(map, marker);
+                for (var sm = 0; sm < gmarkers.length; sm++) {
+                    if(sm!=0){
+                        gmarkers[sm].setIcon("img/1.png");
+                    }
+                }
+                marker.setIcon("img/2.png");
+            }
+        })(marker, i));
+        gmarkers.push(marker);
+    }
+}
+
+function openInfoModal(i) {
+    google.maps.event.trigger(gmarkers[i], "click");
+}
 
 
 
@@ -731,3 +916,25 @@ function init() {
 $('.swiper-slide').click(function () {
     Alert("HELLO");
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
