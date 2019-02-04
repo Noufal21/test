@@ -92,14 +92,13 @@
             </div>
         </div>
     </div>
-    <div class="col-8">
-        <div class="schoolDetail activeted">
+    <div class="col-md-4 col-xs-12 mt-30 schoolDetail activeted" id="detailViews">
 
-        </div>
-        <div class="map">
-            <div id="map"></div>
-        </div>
     </div>
+    <div class="col-md-8 col-xs-12 mt-30 map">
+        <div id="map"></div>
+    </div>
+
 
 </div>
 

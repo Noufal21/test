@@ -29,7 +29,7 @@ $("#searchByPropertyVacant").click(function(e){
     codeAddress(address,true);
 });
 
-
+var detailViews;
 $('#searchByAddress').click(function (e) {
     e.preventDefault();
     const address = $("#searchAddress").val();
@@ -57,6 +57,7 @@ $('#searchByAddress').click(function (e) {
         .then(function(data)
         {
             console.log(data);
+            detailViews = data["detailViews"];
             $('#LegalAddress').text(data["legaladdress"]);
             $('#view').html(data["view"]);
 
@@ -345,12 +346,16 @@ function f1() {
             click: function(swiper, e){
                 // var clicked = $(e.target);
                 openInfoModal(this.clickedIndex+1);
+                $('#detailViews').empty();
+                $('#detailViews').html( detailViews[this.clickedIndex]);
                 //console.log(clicked);
             },
             slideChange:function () {
 
-                $(".selectSchool")[this.activeIndex+1].trigger("click");
+                //$(".selectSchool")[this.activeIndex+1].trigger("click");
                 openInfoModal(this.activeIndex+1);
+                $('#detailViews').empty();
+                $('#detailViews').html( detailViews[this.activeIndex]);
 
             }
         },
@@ -416,6 +421,8 @@ function f1() {
     });
     openInfoModal(1);
     $(".selectSchool").first().trigger("click");
+    $('#detailViews').empty();
+    $('#detailViews').html( detailViews[0]);
 }
 
 

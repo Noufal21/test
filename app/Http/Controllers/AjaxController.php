@@ -103,9 +103,14 @@ class AjaxController extends Controller
         $psArray["legaladdress"] =$propertyInfo["property"][0]["summary"]["legal1"];
         $psArray["view"] = (String) view('schoolPartialView')->with("final_array",$final_array);
         $psArray["final_array"] = $final_array;
+        $detailView = array();
+        foreach($final_array as $k=>$schoolDetailData) {
+
+            $detailView[$k] = (String) view('schooldetailPartialView')->with("schoolDetailData",$schoolDetailData["school_detail"]);
+        }
         $psArray["lat"] = $propertyInfo["property"][0]["location"]["latitude"];
         $psArray["lng"] = $propertyInfo["property"][0]["location"]["longitude"];
-
+        $psArray["detailViews"] = $detailView;
         return $psArray;
 
     }
@@ -142,7 +147,7 @@ class AjaxController extends Controller
                 }else{
                     $final_array = $allPublicSchools['property'][0]["school"];
                 }
-
+                $index = 0;
                 foreach($final_array as $k=>$schoolVal){
                     if(!isset($schoolVal['OBInstID'])){
                         continue;
@@ -153,7 +158,7 @@ class AjaxController extends Controller
                         $final_array[$k]['school_address']['locationcity'] =  $schoolDetails['school'][0]['SchoolProfileAndDistrictInfo']['SchoolLocation']['locationcity'];
                         $final_array[$k]['school_address']['stateabbrev'] =  $schoolDetails['school'][0]['SchoolProfileAndDistrictInfo']['SchoolLocation']['stateabbrev'];
                         $final_array[$k]['school_address']['ZIP'] =  $schoolDetails['school'][0]['SchoolProfileAndDistrictInfo']['SchoolLocation']['ZIP'];
-
+                        $final_array[$k]["school_detail"] = $this->getSchoolDetail($schoolDetails);
                     }else{
                         $final_array[$k]['school_address']['locationaddress'] = '';
                         $final_array[$k]['school_address']['locationcity'] = '';
@@ -161,10 +166,53 @@ class AjaxController extends Controller
                         $final_array[$k]['school_address']['ZIP'] = '';
                     }
 
+
                 }
             }
         }
         return $final_array;
+    }
+    private function getSchoolDetail($schoolDetails)
+    {
+        $schoolDetailData = array();
+        if ($schoolDetails['status']['code'] == 0) {
+
+            //Setting up the variable in pre-set array
+            $SchoolProfileAndDistrictInfo = $schoolDetails['school'][0]['SchoolProfileAndDistrictInfo'];
+
+            //School Name
+            $schoolDetailData['school']['institutionname'] = $SchoolProfileAndDistrictInfo['SchoolSummary']['institutionname'];
+
+            //Address
+            $schoolDetailData['address']['locationaddress'] = $SchoolProfileAndDistrictInfo['SchoolLocation']['locationaddress'];
+            $schoolDetailData['address']['locationcity'] = $SchoolProfileAndDistrictInfo['SchoolLocation']['locationcity'];
+            $schoolDetailData['address']['stateabbrev'] = $SchoolProfileAndDistrictInfo['SchoolLocation']['stateabbrev'];
+            $schoolDetailData['address']['ZIP'] = $SchoolProfileAndDistrictInfo['SchoolLocation']['ZIP'];
+
+            //Contact
+            $schoolDetailData['contact']['phone'] = $SchoolProfileAndDistrictInfo['SchoolContact']['phone'];
+
+            //Website
+            $schoolDetailData['website']['Websiteurl'] = $SchoolProfileAndDistrictInfo['SchoolContact']['Websiteurl'];
+
+            //Technologymeasuretype
+            $schoolDetailData['technology']['Technologymeasuretype'] = $SchoolProfileAndDistrictInfo['SchoolTech']['Technologymeasuretype'];
+
+            //Special Eduction
+            $schoolDetailData['eucation']['specialeducation'] = $SchoolProfileAndDistrictInfo['SchoolDetail']['specialeducation'];
+
+            //No of Student
+            $schoolDetailData['enrollment']['Studentsnumberof'] = $SchoolProfileAndDistrictInfo['SchoolEnrollment']['Studentsnumberof'];
+            $schoolDetailData['enrollment']['Studentteacher'] = $SchoolProfileAndDistrictInfo['SchoolEnrollment']['Studentteacher'];
+
+            //dates
+            $schoolDetailData['dates']['startDate'] = $SchoolProfileAndDistrictInfo['DistrictSummary']['startDate'];
+            $schoolDetailData['dates']['endDate'] = $SchoolProfileAndDistrictInfo['DistrictSummary']['endDate'];
+
+            //Principle Name
+            $schoolDetailData['principle']['Fullname'] = $SchoolProfileAndDistrictInfo['DistrictContact']['Prefixliteral'] . " " . $SchoolProfileAndDistrictInfo['DistrictContact']['Firstname'] . " " . $SchoolProfileAndDistrictInfo['DistrictContact']['Lastname'];
+        }
+        return $schoolDetailData;
     }
 
     private function getPropertyDetail($address){
