@@ -612,7 +612,7 @@ span.customerror,span.customerrorCity {
     height:100%;
     position:fixed;
     z-index:9999;
-    background:url("../images/35.gif") no-repeat center center rgba(255,255,255,0.7);
+    background:url("img/35.gif") no-repeat center center rgba(255,255,255,0.7);
 }
 
 #iw-container {
