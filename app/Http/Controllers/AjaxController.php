@@ -30,7 +30,14 @@ class AjaxController extends Controller
     {
         $result = $this->getallevent(urlencode($line1), urlencode($line2));
         $AVMResult = $this->getdetailmortgageowner(urlencode($line1), urlencode($line2));
-        return view('DetailPage')->with('result',$result)->with("AVMResult",$AVMResult);
+        $psArray=array();
+        foreach ($AVMResult["property"] as $key=>$data)
+        {
+            //return $data;
+            $AssessmentHistory = $this->getAssessmentHistory($data["identifier"]["obPropId"]);
+            $psArray[$data["identifier"]["obPropId"]] = $AssessmentHistory["property"][0]["assessmenthistory"];
+        }
+        return view('DetailPage')->with('result',$result)->with("AVMResult",$AVMResult)->with("Assessment",$psArray);
     }
 
     public function allpropertiesList(Request $request)
@@ -41,7 +48,7 @@ class AjaxController extends Controller
         $zip = $request->input('zip');
         $zip = urlencode($zip);
         $pagesize = 1000;
-        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?latitude=' . $lat . '&longitude=' . $lng . '&page=' . $page . '&pagesize=' . $pagesize ;
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?latitude=' . $lat . '&longitude=' . $lng . '&page=' . $page . '&pagesize=' . $pagesize .'&debug=True';
         //$url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?postalcode=' . $zip . '&page=' . $page . '&pagesize=' . $pagesize;
         $result = $this->curlPOIAPI($url);
         echo json_encode(($result));
@@ -85,7 +92,7 @@ class AjaxController extends Controller
         $lng = $request->input('lng');
         $pagesize = 1;
         $page = 1;
-        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/address?latitude=' . $lat . '&longitude=' . $lng . '&page=' . $page . '&pagesize=' . $pagesize;
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/address?latitude=' . $lat . '&longitude=' . $lng . '&page=' . $page . '&pagesize=' . $pagesize.'&debug=True';
         $result = $this->curlPOIAPI($url);
         $total = $result['status']['total'];
         $totalPages = $total / 1000;
@@ -217,48 +224,48 @@ class AjaxController extends Controller
 
     private function getPropertyDetail($address){
         $address = urlencode($address);
-        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?address='.$address;
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detail?address='.$address.'&debug=True';
         return $this->curlPOIAPI($url);
     }
     private function getPropertyExtendDetail($line1,$line2){
-        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/expandedprofile?address1='.$line1.'&address2='.$line2;
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/expandedprofile?address1='.$line1.'&address2='.$line2.'&debug=True';
         return $this->curlPOIAPI($url);
     }
     private function getAssessmentHistory($id){
-        $url = $this->obapiurl . '/propertyapi/v1.0.0/assessmenthistory/detail?id='.$id;
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/assessmenthistory/detail?id='.$id.'&debug=True';
         return $this->curlPOIAPI($url);
     }
     private function getdetailmortgageowner($line1,$line2){
-        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detailmortgageowner?address1='.$line1.'&address2='.$line2;
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/property/detailmortgageowner?address1='.$line1.'&address2='.$line2.'&debug=True';
         return $this->curlPOIAPI($url);
     }
     private function getallevent($line1,$line2){
-        $url = $this->obapiurl . '/propertyapi/v1.0.0/allevents/detail?address1='.$line1.'&address2='.$line2;
+        $url = $this->obapiurl . '/propertyapi/v1.0.0/allevents/detail?address1='.$line1.'&address2='.$line2.'&debug=True';
         return $this->curlPOIAPI($url);
     }
     private function getAreaHierarchy($lat,$long){
         $location = urlencode($long.','.$lat);
-        $url = $this->obapiurl . "/areaapi/v2.0.0/hierarchy/lookup?WKTString=POINT(" . $location. ")&geoType=ZI";
+        $url = $this->obapiurl . "/areaapi/v2.0.0/hierarchy/lookup?WKTString=POINT(" . $location. ")&geoType=ZI&debug=True";
         return $this->curlPOIAPI($url);
     }
 
     private function getAreaBoundary($areaid){
-        $url = $this->obapiurl ."/areaapi/v2.0.0/boundary/detail?AreaId=".$areaid;
+        $url = $this->obapiurl .'/areaapi/v2.0.0/boundary/detail?AreaId='.$areaid.'&debug=True';
         return $this->curlPOIAPI($url);
     }
     private function getPublicSchoolAddressById($schoolID){
 
-        $url = $this->obapiurl ."/propertyapi/v1.0.0/school/detail?id=".$schoolID;
+        $url = $this->obapiurl .'/propertyapi/v1.0.0/school/detail?id='.$schoolID.'&debug=True';
         return $this->curlPOIAPI($url);
     }
 
     private function getSchoolSampleCode($add1=null,$add2=null){
-        $url = $this->obapiurl ."/propertyapi/v1.0.0/property/detailwithschools?address1=$add1&address2=$add2";
+        $url = $this->obapiurl .'/propertyapi/v1.0.0/property/detailwithschools?address1='.$add1.'&address2='.$add2.'&debug=True';
         return $this->curlPOIAPI($url);
     }
 
     private function getSchoolSamplePrivateCode($lat,$long){
-        $url = $this->obapiurl ."/propertyapi/v1.0.0/school/snapshot?latitude=$lat&longitude=$long&radius=10&filetypetext=private";
+        $url = $this->obapiurl ."/propertyapi/v1.0.0/school/snapshot?latitude=$lat&longitude=$long&radius=10&filetypetext=private&debug=True";
         return $this->curlPOIAPI($url);
     }
     private function curlPOIAPI($url, $apiKey = null){
