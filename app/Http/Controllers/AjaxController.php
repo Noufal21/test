@@ -33,8 +33,12 @@ class AjaxController extends Controller
         $psArray=array();
         foreach ($AVMResult["property"] as $key=>$data)
         {
-            //return $data;
             $AssessmentHistory = $this->getAssessmentHistory($data["identifier"]["obPropId"]);
+            if($AssessmentHistory["property"] == null)
+            {
+
+            }
+            else
             $psArray[$data["identifier"]["obPropId"]] = $AssessmentHistory["property"][0]["assessmenthistory"];
         }
         return view('DetailPage')->with('result',$result)->with("AVMResult",$AVMResult)->with("Assessment",$psArray);
